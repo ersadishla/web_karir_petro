@@ -1,0 +1,404 @@
+@extends('layouts.admin')
+
+@section('title')
+    Uang Keluar
+@endsection
+
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('lib/DataTables/buttons/css/buttons.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('lib/DataTables/buttons/css/buttons.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('lib/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('lib/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css')}}">
+    <style>
+        .modal-spinner {
+            position: fixed;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            border-radius: 0.5rem !important;
+        }
+        .spinner-alignment {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+@endsection
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="#">Pengeluaran</a></li>
+    <li class="breadcrumb-item active"><a href="{{ route('uang-keluar.index') }}">Uang Keluar</a></li>
+@endsection
+
+@section('header_title')
+    Uang Keluar
+@endsection
+
+@section('header_right')
+    <a class="btn btn-white tx-montserrat tx-semibold" data-toggle="collapse" href="#aturTabel" role="button" aria-expanded="false" aria-controls="aturTabel"><i data-feather="sliders" class="wd-10 mg-r-5"></i>Atur</a>
+    <a class="btn btn-primary tx-montserrat tx-semibold text-white" href="{{ route('uang-keluar.create') }}" ><i data-feather="plus"></i> Tambah</a>
+@endsection
+
+@section('content')
+    <div class="col-sm-12 col-lg-12">
+        @include('partials.messages')
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success" style="display: none">
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert-danger" style="display: none">
+        </div>
+    </div>
+    <div class="col-sm-12 col-lg-12 mg-b-20">
+        <div class="collapse mg-t-5 card bg-white" id="aturTabel">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <select class="form-control custom-select @error('kategori') parsley-error @enderror" id="kategori" name="kategori" required>
+                            <option value="" selected>Pilih Kategori</option>
+                            @forelse ($kategori as $row)
+                                @if (old('kategori') == $row->id_kategori)
+                                    <option value="{{$row->id_kategori}}" selected>{{$row->nama}}</option>
+                                @else
+                                    <option value="{{$row->id_kategori}}">{{$row->nama}}</option>
+                                @endif
+                            @empty
+                                <option value="">Tidak ada data</option>
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control custom-select select2 @error('jenis') parsley-error @enderror" id="jenis" name="jenis">
+                            @forelse ($jenis as $row)
+                            @empty
+                                <option value="">Tidak ada data</option>
+                            @endforelse
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <input type="text" id="tgl_mulai" name="tgl_mulai" class="form-control date-picker @error('tgl_mulai') parsley-error @enderror" placeholder="Tanggal mulai" autocomplete="off" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <input type="text" id="tgl_selesai" name="tgl_selesai" class="form-control date-picker @error('tgl_selesai') parsley-error @enderror" placeholder="Tanggal selesai" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="query-button">
+                        <i data-feather="search"></i> Cari
+                    </button>
+                </div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert-filter" style="display: none">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-lg-12 mg-b-10">
+        <div class="card bg-white">
+            <div class="card-body p-0" style="overflow-x: auto !important;">
+                <div class="table-responsive">
+                    <table class="table table-hover table-borderless mg-0" id="tabledata">
+                        <thead>
+                            <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
+                                <th class="wd-5p th-its" style="border-bottom: none !important">No</th>
+                                <th class="wd-15p th-its" style="border-bottom: none !important"><span class="mg-r-15">Tanggal</span></th>
+                                <th class="wd-30p th-its" style="border-bottom: none !important"><span class="mg-r-15">Keterangan</span></th>
+                                <th class="wd-20p th-its" style="border-bottom: none !important"><span class="mg-r-15">Jenis</span></th>
+                                <th class="wd-20p th-its" style="border-bottom: none !important"><span class="mg-r-15">Jumlah</span></th>
+                                <th class="wd-10p th-its" style="border-bottom: none !important"><span class="mg-r-15">Aksi</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- col -->
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('lib/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('lib/DataTables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('lib/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('lib/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('lib/select2/js/i18n/id.js') }}"></script>
+    <script src="{{ asset('lib/jquery/jquery.form.min.js') }}"></script>
+    <script>
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            allowClear: true,
+            placeholder :'Pilih Jenis (opsional)',
+            language: 'id-ID',
+        });
+
+        var initial = {};
+        initTable(initial);
+
+        var datatable;
+        var datatableUrl = `{{ route('uang-keluar.index') }}`;
+
+        function initTable(datatableData) {
+            datatable = $("#tabledata").DataTable({
+                dom:    "<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4'B><'col-sm-12 col-md-4'f>>" +
+                        "<'row'<'col-sm-12'rtr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                language: {
+                    search: '',
+                    searchPlaceholder:  "Cari...",
+                    processing:         '<div class="d-flex justify-content-center"><div class="spinner-border" role="status"></div></div>',
+                    lengthMenu:         '_MENU_ data/halaman',
+                    emptyTable:         'Tidak ada data yang tersedia pada tabel ini',
+                    zeroRecords:        'Tidak ditemukan data yang sesuai',
+                    info:               'Menampilkan _START_ sampai _END_ dari _TOTAL_ entri',
+                    infoEmpty:          'Menampilkan 0 sampai 0 dari 0 entri',
+                    infoFiltered:       '(disaring dari _MAX_ entri keseluruhan)',
+                    paginate: {
+                        first: "<i class='fas fa-angle-double-left'></i>",
+                        last: "<i class='fas fa-angle-double-right'></i>",
+                        previous: "<i class='fas fa-angle-left'></i>",
+                        next: "<i class='fas fa-angle-right'></i>"
+                    },
+                },
+                pagingType:     'full_numbers',
+                destroy:        true,
+                searchDelay:    1000,
+                processing:     true,
+                serverSide:     true,
+                order:          [[3, 'asc'], [1, 'desc']],
+                ajax: {
+                    data: datatableData,
+                    url: datatableUrl
+                },
+                columns: [
+                    {
+                        className: 'td-its tx-medium align-middle border-bottom',
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        },
+                    },
+                    {
+                        className: 'td-its align-middle border-bottom',
+                        data: 'tgl_pengeluaran',
+                        name: 'tgl_pengeluaran',
+                        render: function (data, type, row) {
+                            const monthNames = [
+                                'Januari',
+                                'Februari',
+                                'Maret',
+                                'April',
+                                'Mei',
+                                'Juni',
+                                'Juli',
+                                'Agustus',
+                                'September',
+                                'Oktober',
+                                'November',
+                                'Desember'
+                            ];
+                            let date = new Date(data);
+                            let html = '';
+                            html += date.getDate() + " " + monthNames[date.getMonth()] + " " + date.getFullYear();
+                            return html;
+                        },
+                    },
+                    {
+                        className: 'td-its align-middle border-bottom',
+                        data: 'keterangan',
+                        name: 'keterangan',
+                    },
+                    {
+                        className: 'td-its align-middle border-bottom',
+                        data: null,
+                        render: function (data, type, row) {
+                            let html = '';
+                            html += `${data.kategori} | ${data.jenis}`;
+                            return html;
+                        },
+                    },
+                    {
+                        className: 'td-its align-middle border-bottom tx-right',
+                        data: 'jumlah',
+                        name: 'jumlah',
+                        render: function (data, type, row) {
+                            if(type === 'export') {
+                                return data;
+                            } else {
+                                let html = '';
+                                html += `<span class="float-left">Rp</span> ${data.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1\.")}`;
+                                return html;
+                            }
+                        },
+                    },
+                    {
+                        className: 'border-bottom',
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            let edit = `{{ route('uang-keluar.edit') }}`;
+                            let editUrl = edit+`?id_uang_keluar=${data.id_uang_keluar}`;
+                            let html = '';
+                            html += `<a class="btn btn-white" href="${editUrl}"><i class="far fa-edit"></i></a>`;
+                            return html;
+                        },
+                    },
+                ],
+                buttons: [
+                    {
+                        "extend": 'copy',
+                        "exportOptions": {
+                            columns: [ 0, 1, 2, 3, 4 ]
+                        },
+                        "text": '<i class="fas fa-copy text-secondary"></i>',
+                        "className": 'btn-white mg-y-15 mg-x-10',
+                        "titleAttr": 'Copy',
+                        "filename": 'Daftar Pengeluaran',
+                        "action": newexportaction
+                    },
+                    {
+                        "extend": 'excel',
+                        "exportOptions": {
+                            orthogonal: 'export',
+                            columns: [ 0, 1, 2, 3, 4 ]
+                        },
+                        "text": '<i class="fas fa-file-excel text-success"></i>',
+                        "className": 'btn-white mg-y-15 mg-x-10',
+                        "titleAttr": 'Save as Excel',
+                        "filename": 'Daftar Pengeluaran',
+                        "action": newexportaction
+                    },
+                    {
+                        "extend": 'csv',
+                        "exportOptions": {
+                            orthogonal: 'export',
+                            columns: [ 0, 1, 2, 3, 4 ]
+                        },
+                        "text": '<i class="fas fa-file-csv text-success"></i>',
+                        "className": 'btn-white mg-y-15 mg-x-10',
+                        "titleAttr": 'Save as CSV',
+                        "filename": 'Daftar Pengeluaran',
+                        "action": newexportaction
+                    },
+                    {
+                        "extend": 'pdf',
+                        "exportOptions": {
+                            columns: [ 0, 1, 2, 3, 4 ]
+                        },
+                        "text": '<i class="fas fa-file-pdf text-danger"></i>',
+                        "className": 'btn-white mg-y-15 mg-x-10',
+                        "titleAttr": 'Save as PDF',
+                        "filename": 'Daftar Pengeluaran',
+                        "action": newexportaction
+                    },
+                    {
+                        "extend": 'print',
+                        "exportOptions": {
+                            columns: [ 0, 1, 2, 3, 4 ]
+                        },
+                        "text": '<i class="fas fa-print text-info"></i>',
+                        "className": 'btn-white mg-y-15 mg-x-10',
+                        "titleAttr": 'Print',
+                        "filename": 'Rekap Bulanan',
+                        "action": newexportaction
+                    }
+                ],
+            });
+            $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+            $('body').tooltip({selector: '[data-toggle="tooltip"]'});
+        }
+
+        $('#kategori').on('change', function(){
+            $('#jenis').prop('disabled', true);
+            $('#jenis').empty();
+            let id_kategori = $(this).val();
+
+            let baseUrl = `{{ route('api.jenis') }}`;
+            let queryUrl = baseUrl+`?id_kategori=${id_kategori}`;
+            $.get(queryUrl, function(data){
+                $('#jenis').append(`<option value=""></option>`);
+                $.each(data, function(index, jenis){
+                    $('#jenis').append(`<option value="${jenis.id_jenis}">${jenis.nama}</option>`);
+                });
+                $('#jenis').prop('disabled', false); 
+            });
+        });
+
+        $('#query-button').on('click', function(){
+            if($('#tgl_mulai').val() && !$('#tgl_selesai').val()) {
+
+                $('#alert-filter').show();
+                $('#alert-filter').text('Tanggal selesai harus diisi');
+
+                setTimeout(function(){
+                    $('#alert-filter').hide();
+                    $('#alert-filter').text('');
+                }, 5000 );
+            } else {
+                let data = {};
+                data['kategori'] = $('#kategori').val();
+                data['jenis'] = $('#jenis').val();
+                data['tgl_mulai'] = $('#tgl_mulai').val();
+                data['tgl_selesai'] = $('#tgl_selesai').val();
+
+                initTable(data);
+            }
+        });
+
+        /* For Export Buttons available inside jquery-datatable "server side processing" - Start
+        - due to "server side processing" jquery datatble doesn't support all data to be exported
+        - below function makes the datatable to export all records when "server side processing" is on */
+
+        function newexportaction(e, dt, button, config) {
+            var self = this;
+            var oldStart = dt.settings()[0]._iDisplayStart;
+            dt.one('preXhr', function (e, s, data) {
+                // Just this once, load all data from the server...
+                data.start = 0;
+                data.length = 2147483647;
+                dt.one('preDraw', function (e, settings) {
+                    // Call the original action function
+                    if (button[0].className.indexOf('buttons-copy') >= 0) {
+                        $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                        $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+                            $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+                        $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+                            $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+                            $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+                        $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+                            $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+                            $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-print') >= 0) {
+                        $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                    }
+                    dt.one('preXhr', function (e, s, data) {
+                        // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                        // Set the property to what it was before exporting.
+                        settings._iDisplayStart = oldStart;
+                        data.start = oldStart;
+                    });
+                    // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                    setTimeout(dt.ajax.reload, 0);
+                    // Prevent rendering of the full data to the DOM
+                    return false;
+                });
+            });
+            // Requery the server with the new one-time export settings
+            dt.ajax.reload();
+        };
+        //For Export Buttons available inside jquery-datatable "server side processing" - End
+    </script>
+@endsection

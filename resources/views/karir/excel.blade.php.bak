@@ -1,0 +1,160 @@
+<table>
+    <tr>
+        <td>DAFTAR RIWAYAT HIDUP</td>
+    </tr>
+
+    <tr></tr>
+    <tr>
+        <td>I. DATA PRIBADI</td>
+    </tr>
+    <tr>
+        <td>1. Nama Lengkap</td>
+        <td><?= $pegawai->nama ?></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><?= $pegawai->nik ?> / <?= $pegawai->nik_sap ?></td>
+    </tr>
+    <tr>
+        <td>2. Jabatan</td>
+        <td><?= $pegawai->nm_jabatan ?></td>
+    </tr>
+    <tr>
+        <td>3. Grade</td>
+        <td><?= $pegawai->p_grade ?></td>
+    </tr>
+    <tr>
+        <td>4. Tempat/Tanggal Lahir</td>
+        <td><?= $pegawai->tmp_lahir ?> / <?= $pegawai->formatted_tgl_lahir ?></td>
+    </tr>
+    <tr>
+        <td>5. Agama</td>
+        <td><?= $pegawai->agama ?></td>
+    </tr>
+    <tr>
+        <td>6. Dasar Penerimaan</td>
+        <td><?= $pegawai->pendidikan ?></td>
+    </tr>
+    <tr>
+        <td>7. Pendidikan Akhir</td>
+        <td><?= $pegawai->jurusan ?> - <?= $pegawai->pend_akhir ?> - <?= $pegawai->institusi ?></td>
+    </tr>
+
+    <tr></tr>
+    <tr>
+        <td>II. RIWAYAT PEKERJAAN</td>
+    </tr>
+    <tr>
+        <td>1. Tanggal mulai bekerja</td>
+        <td><?= $pegawai->formatted_tgl_masuk ?></td>
+    </tr>
+    <tr>
+        <td>2. Jumlah masa kerja</td>
+        <td><?= $pegawai->masa_kerja ?></td>
+    </tr>
+    <tr>
+        <td>3. Mutasi jabatan (struktural/fungsional)</td>
+        <td></td>
+    </tr>
+
+    @if (count($internal) > 0)
+        <tr></tr>
+        <tr>
+            <td>A. Di dalam PT Petrokimia Gresik</td>
+        </tr>
+        <tr>
+            <td>No</td>
+            <td>Nama Jabatan</td>
+            <td>Nama Unit Kerja</td>
+            <td>Tahun</td>
+        </tr>
+        @php
+            $no = 1;
+        @endphp
+        @foreach ($internal as $row)
+            <tr>
+                <td>{{ $no++ }}</td>
+                <td>{{ $row->posisi->jobtitle ?? '' }} - {{ $row->posisi->postitle ?? ''}} - {{ $row->posisi->regu ?? ''}} - {{ $row->posisi->seksi ?? ''}} - {{ $row->posisi->bagian ?? ''}}</td>
+                <td>{{ $row->posisi->departemen ?? ''}}</td>
+                <td>{{ $row->formatted_ma_tmt }} s.d. {{ $row->formatted_ma_sls }}</td>
+            </tr>
+        @endforeach
+    @endif
+
+    @if (count($eksternal) > 0)
+        <tr></tr>
+        <tr>
+            <td>B. Di luar PT Petrokimia Gresik</td>
+        </tr>
+        <tr>
+            <td>No</td>
+            <td>Nama Jabatan</td>
+            <td>Nama Unit Kerja</td>
+            <td>Tahun</td>
+        </tr>
+        @php
+            $no = 1;
+        @endphp
+        @foreach ($eksternal as $row)
+            <tr>
+                <td>{{ $no++ }}</td>
+                <td>{{ $row->posisi->jobtitle ?? '' }} - {{ $row->posisi->postitle ?? ''}} - {{ $row->posisi->regu ?? ''}} - {{ $row->posisi->seksi ?? ''}} - {{ $row->posisi->bagian ?? ''}}</td>
+                <td>{{ $row->posisi->departemen ?? ''}}</td>
+                <td>{{ $row->formatted_ma_tmt }} s.d. {{ $row->formatted_ma_sls }}</td>
+            </tr>
+        @endforeach
+    @endif
+
+    <tr></tr>
+    <tr>
+        <td>III. PENDIDIKAN DAN PELATIHAN YANG TELAH DIIKUTI</td>
+    </tr>
+
+    @if (count($pegawai->pelatihanDN) > 0)
+        <tr></tr>
+        <tr>
+            <td>A. Dalam Negeri</td>
+        </tr>
+        <tr>
+            <td>No</td>
+            <td>Jenis Pendidikan</td>
+            <td>Nama/Tempat Penyelenggara</td>
+            <td>Tahun</td>
+        </tr>
+        @php
+            $no = 1;
+        @endphp
+        @foreach ($pegawai->pelatihanDN as $row)
+            <tr>
+                <td>{{ $no++ }}</td>
+                <td>{{ $row->course_title }}</td>
+                <td>{{ $row->training_institution_name }} - {{ $row->training_location }}</td>
+                <td>{{ $row->formatted_start_date }} s.d. {{ $row->formatted_end_date }}</td>
+            </tr>
+        @endforeach
+    @endif
+
+    @if (count($pegawai->pelatihanLN) > 0)
+        <tr></tr>
+        <tr>
+            <td>B. Luar Negeri</td>
+        </tr>
+        <tr>
+            <td>No</td>
+            <td>Jenis Pendidikan</td>
+            <td>Nama/Tempat Penyelenggara</td>
+            <td>Tahun</td>
+        </tr>
+        @php
+            $no = 1;
+        @endphp
+        @foreach ($pegawai->pelatihanLN as $row)
+            <tr>
+                <td>{{ $no++ }}</td>
+                <td>{{ $row->course_title }}</td>
+                <td>{{ $row->training_institution_name }} - {{ $row->training_location }}</td>
+                <td>{{ $row->formatted_start_date }} s.d. {{ $row->formatted_end_date }}</td>
+            </tr>
+        @endforeach
+    @endif
+</table>

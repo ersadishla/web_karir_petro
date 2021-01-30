@@ -1,0 +1,300 @@
+body {
+	font-family: "Source Sans Pro", sans-serif;
+	background-color: #f0f2f5;
+}
+
+.badge-primary {
+	background-color: $blue_1;
+}
+
+a {
+	color: $blue_2;
+
+	&:hover {
+		color: $blue_1;
+	}
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+	font-weight: 600;
+}
+
+.nav-aside {
+	font-size: 0.875rem;
+	//}
+}
+
+.marker-icon-2 {
+	overflow: hidden;
+	display: flex;
+	width: 45px;
+	height: 45px;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: -70%;
+		left: -70%;
+		width: 140%;
+		height: 140%;
+		background-color: #f3f5f9;
+	}
+
+	svg {
+		width: 16px;
+		height: 16px;
+		margin-top: calc(30% - 8px);
+		margin-left: calc(30% - 8px);
+		position: relative;
+		z-index: 1;
+	}
+
+	&.marker-top-right {
+		&::before {
+			left: auto;
+			right: -70%;
+		}
+
+		svg {
+			margin-left: auto;
+			margin-right: calc(30% - 7px);
+		}
+	}
+
+	&.marker-bottom-left {
+		&::before {
+			top: auto;
+			bottom: -70%;
+		}
+
+		svg {
+			margin-top: auto;
+			margin-bottom: calc(30% - 8px);
+		}
+	}
+
+	&.marker-bottom-right {
+		&::before {
+			top: auto;
+			bottom: -70%;
+			left: auto;
+			right: -70%;
+		}
+
+		svg {
+			margin-top: auto;
+			margin-left: auto;
+			margin-bottom: calc(30% - 8px);
+			margin-right: calc(30% - 8px);
+		}
+	}
+}
+
+.marker-primary {
+	&.marker-icon {
+		&::before {
+			background-color: $blue_1;
+		}
+	}
+
+	&.marker-icon-2 {
+		&::before {
+			background-color: $blue_1;
+		}
+	}
+
+	&.marker-ribbon {
+		background-color: $blue_1;
+
+		&::after {
+			border-bottom-color: $blue_2;
+		}
+	}
+}
+
+.marker-secondary {
+	&.marker-icon-2 {
+		&::before {
+			background-color: $secondary;
+		}
+	}
+}
+
+.marker-success {
+	&.marker-icon-2 {
+		&::before {
+			background-color: $success;
+		}
+	}
+}
+
+.marker-danger {
+	&.marker-icon-2 {
+		&::before {
+			background-color: $danger;
+		}
+	}
+}
+
+.marker-warning {
+	&.marker-icon-2 {
+		&::before {
+			background-color: $warning;
+		}
+	}
+}
+
+.marker-info {
+	&.marker-icon-2 {
+		&::before {
+			background-color: $info;
+		}
+	}
+}
+
+.marker-dark {
+	&.marker-icon-2 {
+		&::before {
+			background-color: $dark;
+		}
+	}
+}
+
+.btn-primary {
+	background-color: $blue_2;
+	border-color: $blue_2;
+
+	&.focus {
+		box-shadow: $blue_1;
+	}
+
+	&.disabled {
+		background-color: $blue_2;
+		border-color: $blue_2;
+	}
+
+	&:hover {
+		background-color: $blue_1;
+		border-color: $blue_1;
+	}
+
+	&:focus {
+		box-shadow: $blue_1;
+	}
+
+	&:disabled {
+		background-color: $blue_2;
+		border-color: $blue_2;
+	}
+
+	&:not(:disabled) {
+		&:not(.disabled) {
+			&:active {
+				background-color: $blue_1;
+				border-color: $blue_3;
+
+				&:focus {
+					box-shadow: $blue_1;
+				}
+			}
+		}
+
+		&:not(.disabled).active {
+			background-color: $blue_1;
+			border-color: $blue_3;
+
+			&:focus {
+				box-shadow: $blue_1;
+			}
+		}
+	}
+}
+
+.btn-outline-primary {
+	color: $blue_1;
+	border-color: $blue_1;
+
+	&.focus {
+		box-shadow: $blue_2;
+	}
+
+	&.disabled {
+		color: $blue_1;
+		background-color: transparent;
+	}
+
+	&:hover {
+		color: #fff;
+		background-color: $blue_1;
+		border-color: $blue_1;
+	}
+
+	&:focus {
+		box-shadow: $blue_2;
+	}
+
+	&:disabled {
+		color: $blue_1;
+		background-color: transparent;
+	}
+
+	&:not(:disabled) {
+		&:not(.disabled) {
+			&:active {
+				color: #fff;
+				background-color: $blue_1;
+				border-color: $blue_1;
+
+				&:focus {
+					box-shadow: $blue_2;
+				}
+			}
+		}
+
+		&:not(.disabled).active {
+			color: #fff;
+			background-color: $blue_1;
+			border-color: $blue_1;
+
+			&:focus {
+				box-shadow: $blue_2;
+			}
+		}
+	}
+}
+
+.show {
+	> .btn-primary {
+		&.dropdown-toggle {
+			background-color: $blue_1;
+			border-color: $blue_3;
+
+			&:focus {
+				box-shadow: $blue_1;
+			}
+		}
+	}
+
+	> .btn-outline-primary {
+		&.dropdown-toggle {
+			color: #fff;
+			background-color: $blue_1;
+			border-color: $blue_1;
+
+			&:focus {
+				box-shadow: $blue_2;
+			}
+		}
+	}
+}
+
+.otp {
+	padding: 5px 10px;
+	outline: none;
+	font-size: 16px;
+	width: 40px;
+	text-align: center;
+	margin: 0 5px;
+	color: #000;
+}

@@ -1,0 +1,9 @@
+[ 
+    { "value": 1 , "text": "Frontend Web Developer"},
+    { "value": 2 , "text": "Backend Web Developer"},
+    { "value": 3 , "text": "IT Manager"},
+    { "value": 4 , "text": "AI Engineer"},
+    { "value": 5 , "text": "Game Developer"},
+    { "value": 6 , "text": "UI/UX Designer"},
+    { "value": 7 , "text": "Android Developer"}
+]
